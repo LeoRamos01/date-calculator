@@ -12,30 +12,38 @@ import org.springframework.stereotype.Service;
 @Service
 public class CalculoProporcao {
 
-	public Map<Integer, LocalDate> calcular(LocalDate dataAnterior, LocalDate dataPosterior, Integer divisorMaximo) {
+	public Map<String, LocalDate> calcularPadrao(LocalDate dataAnterior, LocalDate dataPosterior) {
 
-		Map<Integer, LocalDate> map = new LinkedHashMap<>();
+		Map<String, LocalDate> map = new LinkedHashMap<>();
 		
-		for(int divisor = divisorMaximo; divisor > 1; divisor--) {
-			map.put(divisor, calcularParaUmDivisor(dataAnterior, dataPosterior, divisor));
-		}
+		map.put("99%", calcularParaFracao(dataAnterior, dataPosterior, 0.99));
+		map.put("90%", calcularParaFracao(dataAnterior, dataPosterior, 0.9));
+		map.put("75%", calcularParaFracao(dataAnterior, dataPosterior, 3.0 / 4));
+		map.put("metade", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 2));
+		map.put("um sobre e", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / Math.E));
+		map.put("um terço", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 3));
+		map.put("um sobre pi", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / Math.PI));
+		map.put("1/4", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 4));
+		map.put("1/5", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 5));
+		map.put("1/6", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 6));
+		map.put("1/7", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 7));
+		map.put("1/8", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 8));
+		map.put("1/9", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 9));
+		map.put("10%", calcularParaFracao(dataAnterior, dataPosterior, 0.1));
+		map.put("5%", calcularParaFracao(dataAnterior, dataPosterior, 0.05));
+		map.put("2%", calcularParaFracao(dataAnterior, dataPosterior, 0.02));
+		map.put("1%", calcularParaFracao(dataAnterior, dataPosterior, 0.01));
 		
 		return map;
 	}
 	
-	protected LocalDate calcularParaUmDivisor(LocalDate dataAnterior, LocalDate dataPosterior, Integer divisor) {
+	protected LocalDate calcularParaFracao(LocalDate dataAnterior, LocalDate dataPosterior, Double fracao) {
 		
-		Integer divisorAjustado = divisor - 1;
-
-		Double proporcao = 1.0 / Double.valueOf(divisorAjustado.toString());
+		Long distancia = Duration.between(LocalDateTime.of(dataAnterior, LocalTime.MIN), LocalDateTime.of(dataPosterior, LocalTime.MIN)).toDays();
 		
-		Long quantidadeDiasDoPrimeiro = Duration.between(LocalDateTime.of(dataAnterior, LocalTime.MIN), LocalDateTime.of(dataPosterior, LocalTime.MIN)).toDays();
+		Double idadeFuturaDoMaisVelhoEmDias = distancia.doubleValue() / (1 - fracao);
 		
-		Double quantidadeDiasParaProporcaoOcorrerNoFuturo = quantidadeDiasDoPrimeiro * proporcao;
-		
-		LocalDate dataOcorrencia = dataPosterior.plusDays(quantidadeDiasParaProporcaoOcorrerNoFuturo.longValue());
-		
-		return dataOcorrencia;
+		return dataAnterior.plusDays(idadeFuturaDoMaisVelhoEmDias.longValue());
 	}
 	
 }

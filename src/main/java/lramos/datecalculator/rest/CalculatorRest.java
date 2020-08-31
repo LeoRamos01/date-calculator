@@ -25,21 +25,20 @@ public class CalculatorRest {
 	MontarMensagem montarMensagem;
 
 	@PostMapping
-	public String calcularProporcoes(String nomePrimeiro,
+	public String calcularProporcoesPadroes(String nomePrimeiro,
 			String nomeSegundo, 
 			@RequestParam("dataAnterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataAnterior,
-			@RequestParam("dataPosterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataPosterior,
-			Integer divisorMaximo) {
+			@RequestParam("dataPosterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataPosterior) {
 		
-		validar(dataAnterior, dataPosterior, divisorMaximo);
+		validar(dataAnterior, dataPosterior);
 		
-		Map<Integer, LocalDate> map = calculoProporcao.calcular(dataAnterior, dataPosterior, divisorMaximo);
+		Map<String, LocalDate> map = calculoProporcao.calcularPadrao(dataAnterior, dataPosterior);
 		
 		return montarMensagem.montarProporcao(nomePrimeiro, nomeSegundo, map);
 		
 	}
 	
-	private void validar(LocalDate dataAnterior, LocalDate dataPosterior, Integer divisorMaximo) {
+	private void validar(LocalDate dataAnterior, LocalDate dataPosterior) {
 
 		if(dataAnterior.isAfter(dataPosterior)) {
 
@@ -50,11 +49,6 @@ public class CalculatorRest {
 			
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "As datas estão iguais.",
 					new InvalidProporcaoParameterException("As datas estão iguais."));
-			
-		} else if(divisorMaximo < 2) {
-			
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O divisor não pode ser menor que 2.",
-					new InvalidProporcaoParameterException("O divisor não pode ser menor que 2."));
 			
 		}
 
