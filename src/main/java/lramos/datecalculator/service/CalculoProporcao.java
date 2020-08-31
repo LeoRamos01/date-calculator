@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +34,19 @@ public class CalculoProporcao {
 		map.put("5%", calcularParaFracao(dataAnterior, dataPosterior, 0.05));
 		map.put("2%", calcularParaFracao(dataAnterior, dataPosterior, 0.02));
 		map.put("1%", calcularParaFracao(dataAnterior, dataPosterior, 0.01));
+		
+		return map;
+	}
+	
+	public Map<String, LocalDate> calcular(LocalDate dataAnterior, LocalDate dataPosterior, List<Double> fracoes) {
+
+		Map<String, LocalDate> map = new LinkedHashMap<>();
+		
+		fracoes.forEach(f -> {
+			
+			map.put(f.toString(), calcularParaFracao(dataAnterior, dataPosterior, f));
+			
+		});
 		
 		return map;
 	}
