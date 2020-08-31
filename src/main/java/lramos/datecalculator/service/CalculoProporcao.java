@@ -14,8 +14,6 @@ public class CalculoProporcao {
 
 	public Map<Integer, LocalDate> calcular(LocalDate dataAnterior, LocalDate dataPosterior, Integer divisorMaximo) {
 
-		validar(dataAnterior, dataPosterior, divisorMaximo);
-		
 		Map<Integer, LocalDate> map = new LinkedHashMap<>();
 		
 		for(int divisor = divisorMaximo; divisor > 1; divisor--) {
@@ -38,16 +36,6 @@ public class CalculoProporcao {
 		LocalDate dataOcorrencia = dataPosterior.plusDays(quantidadeDiasParaProporcaoOcorrerNoFuturo.longValue());
 		
 		return dataOcorrencia;
-	}
-	
-	private void validar(LocalDate dataAnterior, LocalDate dataPosterior, Integer divisorMaximo) {
-		if(dataAnterior.isAfter(dataPosterior)) {
-			throw new RuntimeException("As datas estão invertidas.");
-		} else if (dataAnterior.isEqual(dataPosterior)) {
-			throw new RuntimeException("As datas estão iguais.");
-		} else if(divisorMaximo < 2) {
-			throw new RuntimeException("O divisor não pode ser menor que 2.");
-		}
 	}
 	
 }
