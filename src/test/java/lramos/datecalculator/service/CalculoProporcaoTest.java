@@ -26,8 +26,8 @@ public class CalculoProporcaoTest {
 	
 	@ParameterizedTest
 	@MethodSource("casos")
-	public void testCalcularParaUmDividendo(LocalDate dataAnterior, LocalDate dataPosterior, LocalDate expected, Integer dividendo) {
-		LocalDate actual = calculoProporcao.calcularParaUmDividendo(dataAnterior, dataPosterior, dividendo);
+	public void testCalcularParaUmDividendo(LocalDate dataAnterior, LocalDate dataPosterior, LocalDate expected, Integer divisor) {
+		LocalDate actual = calculoProporcao.calcularParaUmDivisor(dataAnterior, dataPosterior, divisor);
 		
 		assertEquals(expected, actual);
 	}
