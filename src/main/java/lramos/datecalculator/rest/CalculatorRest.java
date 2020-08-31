@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lramos.datecalculator.service.CalculoProporcao;
@@ -20,7 +22,11 @@ public class CalculatorRest {
 	MontarMensagem montarMensagem;
 
 	@PostMapping
-	public String calcularProporcoes(String nomePrimeiro, String nomeSegundo, LocalDate dataAnterior, LocalDate dataPosterior, Integer divisorMaximo) {
+	public String calcularProporcoes(String nomePrimeiro,
+			String nomeSegundo, 
+			@RequestParam("dataAnterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataAnterior,
+			@RequestParam("dataPosterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataPosterior,
+			Integer divisorMaximo) {
 		
 		Map<Integer, LocalDate> map = calculoProporcao.calcular(dataAnterior, dataPosterior, divisorMaximo);
 		
