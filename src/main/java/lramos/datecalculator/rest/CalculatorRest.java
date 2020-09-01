@@ -1,9 +1,7 @@
 package lramos.datecalculator.rest;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import lramos.datecalculator.dto.ProporcoesDTO;
 import lramos.datecalculator.exception.InvalidProporcaoParameterException;
 import lramos.datecalculator.service.CalculoProporcao;
 import lramos.datecalculator.service.MontarMensagem;
@@ -32,11 +31,11 @@ public class CalculatorRest {
 			@RequestParam("dataAnterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataAnterior,
 			@RequestParam("dataPosterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataPosterior) {
 		
-		validar(dataAnterior, dataPosterior);
+		validarDatas(dataAnterior, dataPosterior);
 		
-		Map<String, LocalDate> map = calculoProporcao.calcularPadrao(dataAnterior, dataPosterior);
+		List<ProporcoesDTO> list = calculoProporcao.calcularPadrao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior);
 		
-		return montarMensagem.montarProporcao(nomePrimeiro, nomeSegundo, map);
+		return montarMensagem.montarProporcao(list);
 		
 	}
 	
@@ -47,13 +46,25 @@ public class CalculatorRest {
 			@RequestParam("dataPosterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataPosterior,
 			Double[] fracoes) {
 		
-		validar(dataAnterior, dataPosterior);
+		validarDatas(dataAnterior, dataPosterior);
 		validarFracoes(fracoes);
 		
-		Map<String, LocalDate> map = calculoProporcao.calcular(dataAnterior, dataPosterior, List.of(fracoes));
+		List<ProporcoesDTO> list = calculoProporcao.calcular(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, List.of(fracoes));
 		
-		return montarMensagem.montarProporcao(nomePrimeiro, nomeSegundo, map);
+		return montarMensagem.montarProporcao(list);
+			
+	}
+	
+	@PostMapping("calcular/porcentagem/hoje")
+	public String calcularProporcoesHoje(String nomePrimeiro,
+			String nomeSegundo, 
+			@RequestParam("dataAnterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataAnterior,
+			@RequestParam("dataPosterior") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataPosterior) {
 		
+		validarDatas(dataAnterior, dataPosterior);
+		
+		return calculoProporcao.calcularHoje(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior);
+			
 	}
 	
 	private void validarFracoes(Double... fracoes) {
@@ -67,7 +78,7 @@ public class CalculatorRest {
 		
 	}
 
-	private void validar(LocalDate dataAnterior, LocalDate dataPosterior) {
+	private void validarDatas(LocalDate dataAnterior, LocalDate dataPosterior) {
 
 		if(dataAnterior.isAfter(dataPosterior)) {
 

@@ -4,60 +4,93 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lramos.datecalculator.dto.ProporcoesDTO;
 
 @Service
 public class CalculoProporcao {
+	
+	@Autowired
+	IdadeCalculator idadeCalculator;
+	
+	public List<ProporcoesDTO> calcularPadrao(String nomePrimeiro, String nomeSegundo, LocalDate dataAnterior, LocalDate dataPosterior) {
 
-	public Map<String, LocalDate> calcularPadrao(LocalDate dataAnterior, LocalDate dataPosterior) {
-
-		Map<String, LocalDate> map = new LinkedHashMap<>();
+		List<ProporcoesDTO> list = new LinkedList<>();
 		
-		map.put("99%", calcularParaFracao(dataAnterior, dataPosterior, 0.99));
-		map.put("90%", calcularParaFracao(dataAnterior, dataPosterior, 0.9));
-		map.put("75%", calcularParaFracao(dataAnterior, dataPosterior, 3.0 / 4));
-		map.put("metade", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 2));
-		map.put("um sobre e", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / Math.E));
-		map.put("um terço", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 3));
-		map.put("um sobre pi", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / Math.PI));
-		map.put("1/4", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 4));
-		map.put("1/5", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 5));
-		map.put("1/6", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 6));
-		map.put("1/7", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 7));
-		map.put("1/8", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 8));
-		map.put("1/9", calcularParaFracao(dataAnterior, dataPosterior, 1.0 / 9));
-		map.put("10%", calcularParaFracao(dataAnterior, dataPosterior, 0.1));
-		map.put("5%", calcularParaFracao(dataAnterior, dataPosterior, 0.05));
-		map.put("2%", calcularParaFracao(dataAnterior, dataPosterior, 0.02));
-		map.put("1%", calcularParaFracao(dataAnterior, dataPosterior, 0.01));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 0.99          , "99%"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 0.9           , "90%"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 3.0 / 4       , "75%"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 2       , "metade"      ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / Math.E  , "um sobre e"  ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 3       , "um terço"    ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / Math.PI , "um sobre pi" ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 4       , "1/4"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 5       , "1/5"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 6       , "1/6"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 7       , "1/7"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 8       , "1/8"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 1.0 / 9       , "1/9"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 0.1           , "10%"         ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 0.05          , "5%"          ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 0.02          , "2%"          ));
+		list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, 0.01          , "1%"          ));
 		
-		return map;
+		return list;
 	}
 	
-	public Map<String, LocalDate> calcular(LocalDate dataAnterior, LocalDate dataPosterior, List<Double> fracoes) {
+	public List<ProporcoesDTO> calcular(String nomePrimeiro, String nomeSegundo, LocalDate dataAnterior, LocalDate dataPosterior, List<Double> fracoes) {
 
-		Map<String, LocalDate> map = new LinkedHashMap<>();
+		List<ProporcoesDTO> list = new LinkedList<>();
 		
 		fracoes.forEach(f -> {
 			
-			map.put(f.toString(), calcularParaFracao(dataAnterior, dataPosterior, f));
+			list.add(calcularParaFracao(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, f, f.toString()));
 			
 		});
 		
-		return map;
+		return list;
 	}
 	
-	protected LocalDate calcularParaFracao(LocalDate dataAnterior, LocalDate dataPosterior, Double fracao) {
+	protected ProporcoesDTO calcularParaFracao(String nomePrimeiro, String nomeSegundo, LocalDate dataAnterior, LocalDate dataPosterior, Double fracao, String nomeBonito) {
 		
 		Long distancia = Duration.between(LocalDateTime.of(dataAnterior, LocalTime.MIN), LocalDateTime.of(dataPosterior, LocalTime.MIN)).toDays();
 		
 		Double idadeFuturaDoMaisVelhoEmDias = distancia.doubleValue() / (1 - fracao);
 		
-		return dataAnterior.plusDays(idadeFuturaDoMaisVelhoEmDias.longValue());
+		dataAnterior.plusDays(idadeFuturaDoMaisVelhoEmDias.longValue());
+		
+		return new ProporcoesDTO(nomeBonito, nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior, dataAnterior.plusDays(idadeFuturaDoMaisVelhoEmDias.longValue()));
+	}
+
+	public String calcularHoje(String nomePrimeiro, String nomeSegundo, LocalDate dataAnterior,
+			LocalDate dataPosterior) {
+		
+		LocalDate hoje = LocalDate.now();
+		
+		Long idadeEmDiasDoMaisVelho = Duration.between(LocalDateTime.of(dataAnterior, LocalTime.MIN), LocalDateTime.of(hoje, LocalTime.MIN)).toDays();
+		
+		Long idadeEmDiasDoMaisNovo = Duration.between(LocalDateTime.of(dataPosterior, LocalTime.MIN), LocalDateTime.of(hoje, LocalTime.MIN)).toDays();
+		
+		Double porcentagem = idadeEmDiasDoMaisNovo.doubleValue() / idadeEmDiasDoMaisVelho.doubleValue();
+		
+		String idadeHojeDoSegundo = idadeCalculator.entre(dataPosterior, hoje);
+		String idadeHojeDoPrimeiro = idadeCalculator.entre(dataAnterior, hoje);
+		
+		return String
+				.format(
+						"Hoje, %s, %s(%s) tem %s da idade de %s(%s).",
+						hoje,
+						nomeSegundo,
+						idadeHojeDoSegundo,
+						porcentagem,
+						nomePrimeiro,
+						idadeHojeDoPrimeiro
+						);
 	}
 	
 }
