@@ -7,14 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import lramos.datecalculator.dto.IdadeDTO;
 import lramos.datecalculator.dto.ProporcoesDTO;
 import lramos.datecalculator.exception.InvalidProporcaoParameterException;
 import lramos.datecalculator.service.CalculoProporcao;
 import lramos.datecalculator.service.MontarMensagem;
+import lramos.datecalculator.vo.IdadeVO;
 
 @RestController
 public class CalculatorRest {
@@ -65,6 +68,11 @@ public class CalculatorRest {
 		
 		return calculoProporcao.calcularHoje(nomePrimeiro, nomeSegundo, dataAnterior, dataPosterior);
 			
+	}
+	
+	@PostMapping("calcular/idades/hoje")
+	public List<IdadeVO> calcularIdadesHoje(@RequestBody IdadeDTO[] idades) {
+		return calculoProporcao.calcularIdadesHoje(List.of(idades));
 	}
 	
 	private void validarFracoes(Double... fracoes) {

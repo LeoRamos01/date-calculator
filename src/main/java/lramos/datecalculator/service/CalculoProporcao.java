@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lramos.datecalculator.dto.IdadeDTO;
 import lramos.datecalculator.dto.ProporcoesDTO;
+import lramos.datecalculator.vo.IdadeVO;
 
 @Service
 public class CalculoProporcao {
@@ -91,6 +94,24 @@ public class CalculoProporcao {
 						nomePrimeiro,
 						idadeHojeDoPrimeiro
 						);
+	}
+	
+	public List<IdadeVO> calcularIdadesHoje(List<IdadeDTO> idades) {
+		
+		LocalDate hoje = LocalDate.now();
+		
+		return idades.stream().map(dto -> {
+			
+			IdadeVO vo = new IdadeVO();
+			
+			vo.setNome(dto.getNome());
+			
+			vo.setIdade(idadeCalculator.entre(dto.getDataNascimento(), hoje));
+			
+			return vo;
+
+		}).collect(Collectors.toList());
+		
 	}
 	
 }
